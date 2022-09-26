@@ -41,19 +41,22 @@ void setup() {
   }
 
   // set advertised local name and service UUID
-  //
-  // <add your code here>
-  //
+  BLE.setDeviceName(BLE_DEVICE_NAME);
+  BLE.setLocalName(BLE_LOCAL_NAME);
+  BLE.setAdvertisedService(accelerometerService);
 
-  // add characteristics and service
-  //
-  // <add your code here>
-  //
+  accelerometerService.addCharacteristic(accelerometerCharacteristicX);
+  accelerometerService.addCharacteristic(accelerometerCharacteristicY);
+  accelerometerService.addCharacteristic(accelerometerCharacteristicZ);
+
+  BLE.addService(accelerometerService);
+
+  accelerometerCharacteristicX.writeValue(0);
+  accelerometerCharacteristicY.writeValue(0);
+  accelerometerCharacteristicZ.writeValue(0);
 
   // start advertising
-  //
-  // <add your code here>
-  //
+  BLE.advertise();
 
   Serial.println("BLE Accelerometer Peripheral");
 }
@@ -61,8 +64,11 @@ void setup() {
 void loop() {
   BLEDevice central = BLE.central();
 
-  // obtain and write accelerometer data
-  // 
-  // <add your code here>
-  // 
+  if (IMU.accelerationAvailable()) {
+    IMU.readAcceleration(x, y, z);
+
+    accelerometerCharacteristicX.writeValue(x);
+    accelerometerCharacteristicY.writeValue(y);
+    accelerometerCharacteristicZ.writeValue(z);
+  }
 }

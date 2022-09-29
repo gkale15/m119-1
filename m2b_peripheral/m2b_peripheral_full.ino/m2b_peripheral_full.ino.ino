@@ -18,9 +18,11 @@ BLEFloatCharacteristic accelerometerCharacteristicZ(BLE_UUID_ACCELEROMETER_Z, BL
 float x, y, z;
 
 void setup() {
-  Serial.begin(9600);
-  while (!Serial)
-    ;
+  // Serial.begin(9600);
+  // while (!Serial)
+  //   ;
+
+  pinMode(LED_BUILTIN, OUTPUT);
 
   // initialize IMU
   if (!IMU.begin()) {
@@ -65,10 +67,13 @@ void loop() {
   BLEDevice central = BLE.central();
 
   if (IMU.accelerationAvailable()) {
+    digitalWrite(LED_BUILTIN, HIGH);
     IMU.readAcceleration(x, y, z);
 
     accelerometerCharacteristicX.writeValue(x);
     accelerometerCharacteristicY.writeValue(y);
     accelerometerCharacteristicZ.writeValue(z);
+  } else {
+    digitalWrite(LED_BUILTIN, LOW);
   }
 }
